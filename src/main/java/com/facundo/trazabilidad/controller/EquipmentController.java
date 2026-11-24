@@ -42,11 +42,6 @@ public class EquipmentController {
         this.serviceRepository = serviceRepository;
     }
 
-    @GetMapping("/")
-    public String home() {
-        return "redirect:/equipos";
-    }
-
     @InitBinder("equipment")
     void protectEquipmentFields(WebDataBinder binder) {
         binder.setDisallowedFields("id", "serviceRecords");
