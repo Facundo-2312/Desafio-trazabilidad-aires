@@ -6,6 +6,7 @@ import com.facundo.trazabilidad.repository.AirConditionerRepository;
 import com.facundo.trazabilidad.repository.ServiceRecordRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
@@ -18,6 +19,7 @@ public class TrazabilidadAiresApplication {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "app.example-data.enabled", havingValue = "true", matchIfMissing = true)
     CommandLineRunner loadExampleData(AirConditionerRepository equipmentRepository,
                                       ServiceRecordRepository serviceRepository) {
         return args -> {

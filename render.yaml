@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: trazabilidad-aires
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /equipos
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: DB_HOST
+        fromDatabase:
+          name: trazabilidad-aires-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: trazabilidad-aires-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: trazabilidad-aires-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: trazabilidad-aires-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: trazabilidad-aires-db
+          property: password
+
+databases:
+  - name: trazabilidad-aires-db
+    databaseName: trazabilidad
+    user: trazabilidad
+    plan: free
+    region: oregon
+    ipAllowList: []
