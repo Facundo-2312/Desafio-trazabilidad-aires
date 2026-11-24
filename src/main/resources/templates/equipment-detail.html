@@ -53,6 +53,9 @@
                             <h3 th:text="${service.description}">Descripción del trabajo</h3>
                             <p><span class="technician-icon">◉</span> <span th:text="${service.technician}">Técnico</span></p>
                             <div th:if="${!#strings.isEmpty(service.observations)}" class="observation" th:text="${service.observations}">Observaciones</div>
+                            <div th:if="${!#strings.isEmpty(service.partsReplaced)}" class="observation">
+                                <strong>Repuestos:</strong> <span th:text="${service.partsReplaced}">Repuestos</span>
+                            </div>
                         </div>
                     </article>
                 </div>
@@ -64,6 +67,7 @@
                     <span class="quick-add-icon">＋</span>
                 </div>
                 <form th:object="${serviceForm}" th:action="@{/equipos/{id}/servicios(id=${equipment.id})}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                     <div class="form-grid">
                         <label class="field">Fecha <span class="required">*</span>
                             <input type="date" th:field="*{serviceDate}" required>
@@ -80,6 +84,9 @@
                         <label class="field full-field">Observaciones y repuestos
                             <textarea th:field="*{observations}" rows="2" placeholder="Repuestos utilizados, recomendaciones u otras notas..." maxlength="2000"></textarea>
                         </label>
+                        <label class="field full-field">Repuestos utilizados
+                            <textarea th:field="*{partsReplaced}" rows="2" placeholder="Indica las piezas o repuestos reemplazados..." maxlength="2000"></textarea>
+                        </label>
                     </div>
                     <div class="form-actions"><button type="submit" class="button button-primary">Guardar visita <span>→</span></button></div>
                 </form>
@@ -92,6 +99,7 @@
             <p class="muted">Escanéalo con tu celular para abrir esta ficha y consultar su historial.</p>
             <img class="qr-image" th:src="@{/equipos/{id}/qr.png(id=${equipment.id})}" alt="Código QR de acceso a la ficha del equipo">
             <a class="button button-secondary qr-download" th:href="@{/equipos/{id}/qr.png(id=${equipment.id})}" th:download="${'qr-equipo-' + equipment.id + '.png'}">↓ Descargar QR</a>
+            <button type="button" class="button button-primary qr-print" onclick="window.print()">Imprimir o guardar como PDF</button>
             <div class="qr-tip"><span>✦</span><p>Imprime el QR en una etiqueta resistente y pégala en un lugar visible del equipo.</p></div>
         </aside>
     </section>

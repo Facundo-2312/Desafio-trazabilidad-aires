@@ -8,4 +8,5 @@ import java.util.List;
 public interface AirConditionerRepository extends JpaRepository<AirConditioner, Long> {
     List<AirConditioner> findByNameContainingIgnoreCaseOrBrandContainingIgnoreCaseOrSerialNumberContainingIgnoreCase(
             String name, String brand, String serialNumber);
+
 }

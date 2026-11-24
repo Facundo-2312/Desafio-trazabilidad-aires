@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <header class="topbar" th:fragment="header">
     <a class="brand" th:href="@{/equipos}">
@@ -8,7 +8,13 @@
     </a>
     <nav class="topnav">
         <a th:href="@{/equipos}" class="nav-link">Panel</a>
+        <a th:href="@{/admin/users}" class="nav-link" sec:authorize="hasRole('ADMIN')">Usuarios</a>
+        <a th:href="@{/admin/data}" class="nav-link" sec:authorize="hasRole('ADMIN')">Respaldos</a>
         <a th:href="@{/equipos/nuevo}" class="button button-primary button-small"><span>＋</span> Nuevo equipo</a>
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" class="nav-link">Cerrar sesión</button>
+        </form>
     </nav>
 </header>
 </body>

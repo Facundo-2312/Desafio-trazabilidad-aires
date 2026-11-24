@@ -35,6 +35,9 @@ public class ServiceRecord {
     @Size(max = 2000)
     private String observations;
 
+    @Size(max = 2000)
+    private String partsReplaced;
+
     protected ServiceRecord() {
     }
 
@@ -45,6 +48,7 @@ public class ServiceRecord {
         this.description = description;
         this.technician = technician;
         this.observations = observations;
+        this.partsReplaced = "";
     }
 
     public Long getId() { return id; }
@@ -53,9 +57,11 @@ public class ServiceRecord {
     public String getDescription() { return description; }
     public String getTechnician() { return technician; }
     public String getObservations() { return observations; }
+    public String getPartsReplaced() { return partsReplaced; }
 
     public void setServiceDate(LocalDate serviceDate) { this.serviceDate = serviceDate; }
     public void setDescription(String description) { this.description = description; }
     public void setTechnician(String technician) { this.technician = technician; }
     public void setObservations(String observations) { this.observations = observations; }
+    public void setPartsReplaced(String partsReplaced) { this.partsReplaced = partsReplaced; }
 }

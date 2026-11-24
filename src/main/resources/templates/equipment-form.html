@@ -17,6 +17,7 @@
     </section>
     <form class="panel form-panel" th:object="${equipment}"
           th:action="${equipment.id == null ? '/equipos' : '/equipos/' + equipment.id + '/editar'}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <div class="form-section-title"><span class="section-number">01</span><div><h2>Identificación</h2><p>Información para reconocer el equipo.</p></div></div>
         <div class="form-grid">
             <label class="field full-field">Nombre o ubicación <span class="required">*</span>

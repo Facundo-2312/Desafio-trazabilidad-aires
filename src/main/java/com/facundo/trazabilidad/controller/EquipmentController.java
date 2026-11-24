@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -58,7 +57,8 @@ public class EquipmentController {
     public String dashboard(@RequestParam(defaultValue = "") String q, Model model) {
         model.addAttribute("query", q);
         model.addAttribute("equipment", q.isBlank()
-                ? equipmentRepository.findAll(Sort.by(Sort.Direction.ASC, "name"))
+                ? equipmentRepository.findAll(org.springframework.data.domain.Sort.by(
+                        org.springframework.data.domain.Sort.Direction.ASC, "name"))
                 : equipmentRepository
                     .findByNameContainingIgnoreCaseOrBrandContainingIgnoreCaseOrSerialNumberContainingIgnoreCase(
                             q, q, q));
@@ -70,8 +70,7 @@ public class EquipmentController {
 
     @GetMapping("/nuevo")
     public String newEquipment(Model model) {
-        model.addAttribute("equipment", new AirConditioner("", "", "", "", "", "",
-                null, "", null, ""));
+        model.addAttribute("equipment", new AirConditioner("", "", "", "", "", "", null, "", null, ""));
         model.addAttribute("pageTitle", "Agregar equipo");
         return "equipment-form";
     }
@@ -130,9 +129,12 @@ public class EquipmentController {
             model.addAttribute("serviceCount", serviceRepository.countByAirConditionerId(id));
             return "equipment-detail";
         }
-        serviceRepository.save(new ServiceRecord(equipment, service.getServiceDate(),
+        ServiceRecord savedService = new ServiceRecord(equipment, service.getServiceDate(),
                 service.getDescription().trim(), service.getTechnician().trim(),
-                service.getObservations() == null ? "" : service.getObservations().trim()));
+                service.getObservations() == null ? "" : service.getObservations().trim());
+        savedService.setPartsReplaced(service.getPartsReplaced() == null
+                ? "" : service.getPartsReplaced().trim());
+        serviceRepository.save(savedService);
         redirect.addFlashAttribute("success", "La visita de mantenimiento quedó registrada.");
         return "redirect:/equipos/" + id + "#historial";
     }
@@ -143,7 +145,7 @@ public class EquipmentController {
         getEquipment(id);
         String url = buildEquipmentUrl(request, id);
         try {
-            var matrix = new QRCodeWriter().encode(url, BarcodeFormat.QR_CODE, 420, 420);
+            var matrix = new QRCodeWriter().encode(url, BarcodeFormat.QR_CODE, 1024, 1024);
             response.setHeader("Cache-Control", CacheControl.noCache().getHeaderValue());
             MatrixToImageWriter.writeToStream(matrix, "PNG", response.getOutputStream());
         } catch (WriterException exception) {

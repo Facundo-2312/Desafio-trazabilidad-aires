@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Usuarios · ClimaTrack</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: header}"></div>
+<main class="page-shell narrow-shell">
+    <a class="back-link" th:href="@{/equipos}">← Volver al panel</a>
+    <section class="form-intro">
+        <p class="eyebrow">ADMINISTRACIÓN</p>
+        <h1>Usuarios</h1>
+        <p class="muted">Crea cuentas individuales para el equipo. Todos los técnicos autorizados comparten el mismo inventario.</p>
+    </section>
+    <div th:if="${success}" class="alert-success" th:text="${success}"></div>
+    <section class="panel form-panel">
+        <h2>Cuentas existentes</h2>
+        <div class="equipment-list">
+            <div class="equipment-row" th:each="account : ${users}">
+                <span class="unit-main">
+                    <strong th:text="${account.email}">correo</strong>
+                    <small th:text="${account.role == T(com.facundo.trazabilidad.model.UserRole).ADMIN ? 'Administrador' : 'Técnico'}">Rol</small>
+                </span>
+            </div>
+        </div>
+    </section>
+    <form class="panel form-panel" th:object="${userForm}" th:action="@{/admin/users}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <h2>Crear cuenta</h2>
+        <div class="form-grid">
+            <label class="field full-field">Correo electrónico
+                <input type="email" th:field="*{email}" autocomplete="off" required maxlength="254">
+                <small class="field-error" th:errors="*{email}"></small>
+            </label>
+            <label class="field full-field">Contraseña inicial (mínimo 12 caracteres)
+                <input type="password" th:field="*{password}" autocomplete="new-password" required minlength="12" maxlength="72">
+                <small class="field-error" th:errors="*{password}"></small>
+            </label>
+            <label class="field full-field">Rol
+                <select th:field="*{role}">
+                    <option value="USER">Técnico — registra y consulta el inventario compartido</option>
+                    <option value="ADMIN">Administrador — gestiona usuarios y el inventario</option>
+                </select>
+                <small class="field-error" th:errors="*{role}"></small>
+            </label>
+        </div>
+        <div class="form-actions"><button type="submit" class="button button-primary">Crear cuenta <span>→</span></button></div>
+    </form>
+</main>
+</body>
+</html>

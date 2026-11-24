@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesión · ClimaTrack</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<main class="page-shell narrow-shell">
+    <section class="form-intro">
+        <p class="eyebrow">CLIMATRACK</p>
+        <h1>Iniciar sesión</h1>
+        <p class="muted">Accede a tus equipos e historiales de mantenimiento.</p>
+    </section>
+    <div th:if="${param.error}" class="alert-error">Correo o contraseña incorrectos.</div>
+    <div th:if="${param.logout}" class="alert-success">La sesión se cerró correctamente.</div>
+    <form class="panel form-panel" th:action="@{/login}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <label class="field">Correo electrónico
+            <input type="email" name="username" autocomplete="username" required autofocus>
+        </label>
+        <label class="field">Contraseña
+            <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <div class="form-actions">
+            <button type="submit" class="button button-primary">Iniciar sesión <span>→</span></button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

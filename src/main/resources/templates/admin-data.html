@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Respaldos · ClimaTrack</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: header}"></div>
+<main class="page-shell narrow-shell">
+    <a class="back-link" th:href="@{/equipos}">← Volver al panel</a>
+    <section class="form-intro">
+        <p class="eyebrow">ADMINISTRACIÓN</p>
+        <h1>Respaldos y migración</h1>
+        <p class="muted">Descarga una copia JSON de los equipos e historiales y guárdala fuera de Render.</p>
+    </section>
+    <div th:if="${success}" class="alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+    <section class="panel form-panel">
+        <h2>Descargar respaldo</h2>
+        <p class="muted">Incluye los datos técnicos, mantenimientos, observaciones y repuestos. No incluye cuentas de usuario.</p>
+        <a class="button button-primary" th:href="@{/admin/data/backup.json}">Descargar respaldo JSON</a>
+    </section>
+    <section class="panel form-panel">
+        <h2>Importar en un inventario vacío</h2>
+        <p class="muted">La importación solo se permite cuando todavía no hay equipos ni servicios; no sobrescribe datos existentes.</p>
+        <form th:action="@{/admin/data/import}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <label class="field">Archivo de respaldo JSON (máximo 10 MB)
+                <input type="file" name="backup" accept="application/json,.json" required>
+            </label>
+            <div class="form-actions"><button type="submit" class="button button-primary">Importar respaldo</button></div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

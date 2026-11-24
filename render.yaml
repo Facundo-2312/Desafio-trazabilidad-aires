@@ -4,10 +4,14 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    healthCheckPath: /equipos
+    healthCheckPath: /login
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: render
+      - key: BOOTSTRAP_ADMIN_EMAIL
+        sync: false
+      - key: BOOTSTRAP_ADMIN_PASSWORD
+        sync: false
       - key: DB_HOST
         fromDatabase:
           name: trazabilidad-aires-db

@@ -200,7 +200,7 @@ h3 { margin-bottom: 0; font-size: 14px; }
     .service-form-panel .panel-heading { align-items: center; }
 }
 @media print {
-    .topbar, .back-link, .detail-hero > .button, .detail-main, .qr-download, .qr-tip, .footer-note { display: none !important; }
+    .topbar, .back-link, .detail-hero > .button, .detail-main, .qr-download, .qr-print, .qr-tip, .footer-note { display: none !important; }
     body { background: white; }
     .page-shell { padding: 0; }
     .detail-grid { display: block; }
@@ -1118,5 +1118,44 @@ body::after {
     body::before,
     body::after {
         animation: none;
+    }
+}
+
+.logout-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.logout-form button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.field select {
+    width: 100%;
+    min-height: 39px;
+    padding: 10px 11px;
+    border: 1px solid #e3e9ed;
+    border-radius: 7px;
+    background: #fff;
+    color: #263d4c;
+    font: inherit;
+}
+
+.alert-error {
+    margin-bottom: 16px;
+    padding: 11px 14px;
+    border: 1px solid #f0d7d4;
+    border-radius: 8px;
+    background: #fff4f2;
+    color: #a94239;
+    font-size: 12px;
+}
+
+@media (max-width: 700px) {
+    .topnav .logout-form .nav-link {
+        display: block;
     }
 }
