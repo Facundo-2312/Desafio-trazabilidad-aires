@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panel · ClimaTrack</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: header}"></div>
+<main class="page-shell">
+    <section class="welcome-row">
+        <div>
+            <p class="eyebrow">GESTIÓN DE MANTENIMIENTO</p>
+            <h1>Panel de control</h1>
+            <p class="muted">Todo el estado de tus equipos, en un solo lugar.</p>
+        </div>
+        <a class="button button-primary" th:href="@{/equipos/nuevo}"><span>＋</span> Registrar equipo</a>
+    </section>
+
+    <div th:if="${success}" class="alert-success" th:text="${success}"></div>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span class="stat-icon ice">❄</span>
+            <div><p>Equipos registrados</p><strong th:text="${equipmentCount}">0</strong></div>
+            <span class="stat-caption">en inventario</span>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon mint">✓</span>
+            <div><p>Servicios realizados</p><strong th:text="${serviceCount}">0</strong></div>
+            <span class="stat-caption">en total</span>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon violet">⌁</span>
+            <div><p>Acceso rápido</p><strong class="stat-word">QR</strong></div>
+            <span class="stat-caption">un código por equipo</span>
+        </article>
+    </section>
+
+    <section class="content-grid">
+        <div class="panel equipment-panel">
+            <div class="panel-heading">
+                <div><h2>Mis equipos</h2><p class="muted">Consulta fichas e historiales de mantenimiento.</p></div>
+                <form class="search-form" method="get" th:action="@{/equipos}">
+                    <span>⌕</span>
+                    <input type="search" name="q" placeholder="Buscar equipo..." th:value="${query}" aria-label="Buscar equipos">
+                </form>
+            </div>
+            <div th:if="${#lists.isEmpty(equipment)}" class="empty-state">
+                <span class="empty-icon">❄</span>
+                <h3 th:text="${query.isBlank() ? 'Todavía no hay equipos' : 'No encontramos equipos'}">Sin equipos</h3>
+                <p th:text="${query.isBlank() ? 'Registra tu primer aire acondicionado para comenzar.' : 'Prueba con otro nombre, marca o número de serie.'}"></p>
+                <a th:if="${query.isBlank()}" class="button button-primary" th:href="@{/equipos/nuevo}">Agregar primer equipo</a>
+            </div>
+            <div th:unless="${#lists.isEmpty(equipment)}" class="equipment-list">
+                <a class="equipment-row" th:each="item : ${equipment}" th:href="@{/equipos/{id}(id=${item.id})}">
+                    <span class="unit-icon">❄</span>
+                    <span class="unit-main">
+                        <strong th:text="${item.name}">Oficina 1</strong>
+                        <small><span th:text="${item.brand ?: 'Sin marca'}">Marca</span><span class="dot">·</span><span th:text="${item.model ?: 'Sin modelo'}">Modelo</span></small>
+                    </span>
+                    <span class="unit-serial" th:text="${item.serialNumber ?: 'Sin número de serie'}">Serie</span>
+                    <span class="unit-history"><b th:text="${#lists.size(item.serviceRecords)}">0</b> servicios</span>
+                    <span class="row-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+        <aside class="panel activity-panel">
+            <div class="panel-heading compact">
+                <div><h2>Actividad reciente</h2><p class="muted">Últimos trabajos registrados.</p></div>
+            </div>
+            <div th:if="${#lists.isEmpty(recentServices)}" class="activity-empty">
+                <p>Aún no hay servicios registrados.</p>
+            </div>
+            <div th:unless="${#lists.isEmpty(recentServices)}" class="activity-list">
+                <a class="activity-item" th:each="service : ${recentServices}"
+                   th:href="@{/equipos/{id}(id=${service.airConditioner.id})}">
+                    <span class="activity-dot"></span>
+                    <span class="activity-copy">
+                        <strong th:text="${service.airConditioner.name}">Oficina</strong>
+                        <span th:text="${service.description}">Trabajo</span>
+                        <small><time th:text="${#temporals.format(service.serviceDate, 'dd/MM/yyyy')}">Fecha</time><span class="dot">·</span><span th:text="${service.technician}">Técnico</span></small>
+                    </span>
+                </a>
+            </div>
+        </aside>
+    </section>
+    <footer class="footer-note">ClimaTrack <span>·</span> Trazabilidad sencilla para tus equipos.</footer>
+</main>
+</body>
+</html>

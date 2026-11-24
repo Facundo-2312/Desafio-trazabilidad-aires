@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="topbar" th:fragment="header">
+    <a class="brand" th:href="@{/equipos}">
+        <span class="brand-mark">❄</span>
+        <span>Clima<span class="brand-light">Track</span><small>CONTROL DE MANTENIMIENTO</small></span>
+    </a>
+    <nav class="topnav">
+        <a th:href="@{/equipos}" class="nav-link">Panel</a>
+        <a th:href="@{/equipos/nuevo}" class="button button-primary button-small"><span>＋</span> Nuevo equipo</a>
+    </nav>
+</header>
+</body>
+</html>

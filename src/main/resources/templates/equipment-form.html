@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${pageTitle + ' · ClimaTrack'}">Equipo · ClimaTrack</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: header}"></div>
+<main class="page-shell narrow-shell">
+    <a class="back-link" th:href="${equipment.id == null ? '/equipos' : '/equipos/' + equipment.id}">← Volver</a>
+    <section class="form-intro">
+        <p class="eyebrow">INVENTARIO</p>
+        <h1 th:text="${pageTitle}">Agregar equipo</h1>
+        <p class="muted">Completa los datos para identificar y dar seguimiento al equipo.</p>
+    </section>
+    <form class="panel form-panel" th:object="${equipment}"
+          th:action="${equipment.id == null ? '/equipos' : '/equipos/' + equipment.id + '/editar'}" method="post">
+        <div class="form-section-title"><span class="section-number">01</span><div><h2>Identificación</h2><p>Información para reconocer el equipo.</p></div></div>
+        <div class="form-grid">
+            <label class="field full-field">Nombre o ubicación <span class="required">*</span>
+                <input type="text" th:field="*{name}" placeholder="Ej. Oficina 1" maxlength="100" required>
+                <small class="field-error" th:errors="*{name}"></small>
+            </label>
+            <label class="field">Tipo de equipo
+                <input type="text" th:field="*{equipmentType}" placeholder="Ej. Minisplit" maxlength="60">
+            </label>
+            <label class="field">Marca
+                <input type="text" th:field="*{brand}" placeholder="Ej. Samsung" maxlength="80">
+            </label>
+            <label class="field">Modelo
+                <input type="text" th:field="*{model}" placeholder="Modelo del equipo" maxlength="80">
+            </label>
+            <label class="field">Número de serie
+                <input type="text" th:field="*{serialNumber}" placeholder="Número de serie" maxlength="80">
+            </label>
+            <label class="field">Capacidad
+                <input type="text" th:field="*{capacity}" placeholder="Ej. 12.000 BTU" maxlength="50">
+            </label>
+            <label class="field">Tipo de refrigerante
+                <input type="text" th:field="*{refrigerant}" placeholder="Ej. R32" maxlength="40">
+            </label>
+        </div>
+        <div class="form-section-title section-spaced"><span class="section-number">02</span><div><h2>Instalación y garantía</h2><p>Fechas de referencia del equipo.</p></div></div>
+        <div class="form-grid">
+            <label class="field">Fecha de instalación
+                <input type="date" th:field="*{installationDate}">
+            </label>
+            <label class="field">Instalado por
+                <input type="text" th:field="*{installer}" placeholder="Nombre del instalador" maxlength="100">
+            </label>
+            <label class="field">Fin de garantía
+                <input type="date" th:field="*{warrantyEndDate}">
+            </label>
+        </div>
+        <div class="form-actions">
+            <a class="button button-quiet" th:href="${equipment.id == null ? '/equipos' : '/equipos/' + equipment.id}">Cancelar</a>
+            <button type="submit" class="button button-primary">Guardar equipo <span>→</span></button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

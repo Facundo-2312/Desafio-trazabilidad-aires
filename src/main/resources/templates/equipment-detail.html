@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${equipment.name + ' · ClimaTrack'}">Equipo · ClimaTrack</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: header}"></div>
+<main class="page-shell">
+    <a class="back-link" th:href="@{/equipos}">← Todos los equipos</a>
+    <div th:if="${success}" class="alert-success" th:text="${success}"></div>
+    <section class="detail-hero">
+        <div class="detail-title">
+            <span class="detail-unit-icon">❄</span>
+            <div><p class="eyebrow" th:text="${equipment.equipmentType ?: 'EQUIPO DE AIRE ACONDICIONADO'}">EQUIPO</p>
+                <h1 th:text="${equipment.name}">Oficina 1</h1>
+                <p class="muted"><span th:text="${equipment.brand ?: 'Marca sin especificar'}"></span><span class="dot">·</span><span th:text="${equipment.model ?: 'Modelo sin especificar'}"></span></p>
+            </div>
+        </div>
+        <a class="button button-secondary" th:href="@{/equipos/{id}/editar(id=${equipment.id})}">✎ Editar datos</a>
+    </section>
+
+    <section class="detail-grid">
+        <div class="detail-main">
+            <article class="panel info-panel">
+                <div class="panel-heading compact"><div><h2>Ficha del equipo</h2><p class="muted">Datos técnicos e instalación.</p></div></div>
+                <div class="info-grid">
+                    <div class="info-cell"><span>Número de serie</span><strong th:text="${equipment.serialNumber ?: 'No especificado'}">—</strong></div>
+                    <div class="info-cell"><span>Capacidad</span><strong th:text="${equipment.capacity ?: 'No especificada'}">—</strong></div>
+                    <div class="info-cell"><span>Refrigerante</span><strong th:text="${equipment.refrigerant ?: 'No especificado'}">—</strong></div>
+                    <div class="info-cell"><span>Fecha de instalación</span><strong th:text="${equipment.installationDate == null ? 'No especificada' : #temporals.format(equipment.installationDate, 'dd/MM/yyyy')}">—</strong></div>
+                    <div class="info-cell"><span>Instalado por</span><strong th:text="${equipment.installer ?: 'No especificado'}">—</strong></div>
+                    <div class="info-cell"><span>Fin de garantía</span><strong th:text="${equipment.warrantyEndDate == null ? 'No especificado' : #temporals.format(equipment.warrantyEndDate, 'dd/MM/yyyy')}">—</strong></div>
+                </div>
+            </article>
+
+            <article class="panel history-panel" id="historial">
+                <div class="panel-heading compact">
+                    <div><h2>Historial de mantenimiento</h2><p class="muted"><span th:text="${serviceCount}">0</span> visitas registradas</p></div>
+                    <span class="history-badge">● Historial completo</span>
+                </div>
+                <div th:if="${#lists.isEmpty(equipment.serviceRecords)}" class="empty-history">
+                    <span>◷</span><p>Aún no hay servicios para este equipo.</p>
+                    <small>Registra la primera visita en el formulario de abajo.</small>
+                </div>
+                <div th:unless="${#lists.isEmpty(equipment.serviceRecords)}" class="timeline">
+                    <article class="timeline-entry" th:each="service : ${equipment.serviceRecords}">
+                        <span class="timeline-marker"></span>
+                        <div class="timeline-date" th:text="${#temporals.format(service.serviceDate, 'dd MMM yyyy')}">Fecha</div>
+                        <div class="timeline-card">
+                            <h3 th:text="${service.description}">Descripción del trabajo</h3>
+                            <p><span class="technician-icon">◉</span> <span th:text="${service.technician}">Técnico</span></p>
+                            <div th:if="${!#strings.isEmpty(service.observations)}" class="observation" th:text="${service.observations}">Observaciones</div>
+                        </div>
+                    </article>
+                </div>
+            </article>
+
+            <article class="panel form-panel service-form-panel">
+                <div class="panel-heading compact">
+                    <div><h2>Registrar visita</h2><p class="muted">Agrega el trabajo recién realizado.</p></div>
+                    <span class="quick-add-icon">＋</span>
+                </div>
+                <form th:object="${serviceForm}" th:action="@{/equipos/{id}/servicios(id=${equipment.id})}" method="post">
+                    <div class="form-grid">
+                        <label class="field">Fecha <span class="required">*</span>
+                            <input type="date" th:field="*{serviceDate}" required>
+                            <small class="field-error" th:errors="*{serviceDate}"></small>
+                        </label>
+                        <label class="field">Técnico <span class="required">*</span>
+                            <input type="text" th:field="*{technician}" placeholder="Nombre del técnico" maxlength="100" required>
+                            <small class="field-error" th:errors="*{technician}"></small>
+                        </label>
+                        <label class="field full-field">Trabajo realizado <span class="required">*</span>
+                            <textarea th:field="*{description}" rows="3" placeholder="Describe el mantenimiento o reparación..." maxlength="2000" required></textarea>
+                            <small class="field-error" th:errors="*{description}"></small>
+                        </label>
+                        <label class="field full-field">Observaciones y repuestos
+                            <textarea th:field="*{observations}" rows="2" placeholder="Repuestos utilizados, recomendaciones u otras notas..." maxlength="2000"></textarea>
+                        </label>
+                    </div>
+                    <div class="form-actions"><button type="submit" class="button button-primary">Guardar visita <span>→</span></button></div>
+                </form>
+            </article>
+        </div>
+
+        <aside class="qr-card panel">
+            <p class="eyebrow">ACCESO RÁPIDO</p>
+            <h2>Código QR del equipo</h2>
+            <p class="muted">Escanéalo con tu celular para abrir esta ficha y consultar su historial.</p>
+            <img class="qr-image" th:src="@{/equipos/{id}/qr.png(id=${equipment.id})}" alt="Código QR de acceso a la ficha del equipo">
+            <a class="button button-secondary qr-download" th:href="@{/equipos/{id}/qr.png(id=${equipment.id})}" th:download="${'qr-equipo-' + equipment.id + '.png'}">↓ Descargar QR</a>
+            <div class="qr-tip"><span>✦</span><p>Imprime el QR en una etiqueta resistente y pégala en un lugar visible del equipo.</p></div>
+        </aside>
+    </section>
+    <footer class="footer-note">ClimaTrack <span>·</span> Trazabilidad sencilla para tus equipos.</footer>
+</main>
+</body>
+</html>
